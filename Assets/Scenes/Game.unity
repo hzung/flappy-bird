@@ -2144,6 +2144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d88747388e9b12c47a3921fcc34a8df3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pipePattern: E-E-E-H-H
   waitTime: 1.5
   obstaclePrefabs:
   - {fileID: 1556402544744368, guid: 3420925d93c729a48bb3705653b55702, type: 3}
