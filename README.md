@@ -1,6 +1,3 @@
-> Sau khi làm bài xong, đánh giá ưu nhược điểm của thiết kế, tổ chức project. Đề
-xuất cách tổ chức project của bạn. Đánh giá, đề xuất và các ghi chú bổ sung khác nếu có xin gửi kèm trong thư mục project dạng file Markdown (.md)
-
 # Đánh giá ưu điểm
 * Cách tổ chức các folder level 1: Animation, Fonts, Materials, ... vừa đủ cho tính chất của dự án
 * Project kéo về, tải đúng version Unity là chạy được luôn. Rất thuận tiện để ứng viên setup làm bài test.
