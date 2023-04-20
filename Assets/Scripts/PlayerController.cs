@@ -1,20 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
 
+	[SerializeField] private SpriteRenderer spriteRenderer;
 	[SerializeField] private float thrust, minTiltSmooth, maxTiltSmooth, hoverDistance, hoverSpeed;
+	private static readonly int GrayscaleAmount = Shader.PropertyToID("_GrayscaleAmount");
 	private bool start;
 	private float timer, tiltSmooth, y;
 	private Rigidbody2D playerRigid;
 	private Quaternion downRotation, upRotation;
+	private Material playerMaterial;
 
 	void Start () {
 		tiltSmooth = maxTiltSmooth;
 		playerRigid = GetComponent<Rigidbody2D> ();
 		downRotation = Quaternion.Euler (0, 0, -90);
 		upRotation = Quaternion.Euler (0, 0, 35);
+		playerMaterial = spriteRenderer.material;
 	}
 
 	void Update () {
@@ -74,7 +80,18 @@ public class PlayerController : MonoBehaviour {
 			playerRigid.simulated = false;
 			KillPlayer ();
 			transform.rotation = downRotation;
+			// Grayscale player
+			GrayScalePlayer();
 		}
+	}
+
+	private void GrayScalePlayer()
+	{
+		float grayScaleAmount = 0, duration = 0.3f;
+		DOTween.To(() => grayScaleAmount, x => grayScaleAmount = x, 1, duration)
+			.OnUpdate(() => {
+				playerMaterial.SetFloat(GrayscaleAmount, grayScaleAmount);
+			});
 	}
 
 	public void KillPlayer () {
