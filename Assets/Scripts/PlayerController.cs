@@ -7,13 +7,16 @@ public class PlayerController : MonoBehaviour
 {
 
 	[SerializeField] private SpriteRenderer spriteRenderer;
-	[SerializeField] private float thrust, minTiltSmooth, maxTiltSmooth, hoverDistance, hoverSpeed;
+	[SerializeField] private float thrust, minTiltSmooth, maxTiltSmooth, hoverDistance, hoverSpeed, jumpPower, jumpDuration, fallDuration;
+	[SerializeField] private AnimationCurve jumpCurve;
+	[SerializeField] private AnimationCurve fallCurve;
 	private static readonly int GrayscaleAmount = Shader.PropertyToID("_GrayscaleAmount");
 	private bool start;
 	private float timer, tiltSmooth, y;
 	private Rigidbody2D playerRigid;
 	private Quaternion downRotation, upRotation;
 	private Material playerMaterial;
+	private Sequence jumpSequence;
 
 	void Start () {
 		tiltSmooth = maxTiltSmooth;
@@ -51,7 +54,11 @@ public class PlayerController : MonoBehaviour
 				transform.rotation = upRotation;
 				playerRigid.velocity = Vector2.zero;
 				// Push the player upwards
-				playerRigid.AddForce (Vector2.up * thrust);
+//				playerRigid.AddForce (Vector2.up * thrust);
+				jumpSequence?.Kill();
+				jumpSequence = DOTween.Sequence();
+				jumpSequence.Append(transform.DOLocalMoveY(transform.localPosition.y + jumpPower, jumpDuration).SetEase(jumpCurve));
+				jumpSequence.Append(transform.DOLocalMoveY(-0.9f, fallDuration).SetEase(fallCurve));
 				SoundManager.Instance.PlayTheAudio("Flap");
 			}
 		}
@@ -62,7 +69,8 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	void OnTriggerEnter2D (Collider2D col) {
+	void OnTriggerEnter2D (Collider2D col)
+	{
 		if (col.transform.CompareTag ("Score")) {
 			Destroy (col.gameObject);
 			GameManager.Instance.UpdateScore ();
@@ -72,6 +80,14 @@ public class PlayerController : MonoBehaviour
 				child.gameObject.GetComponent<BoxCollider2D> ().enabled = false;
 			}
 			KillPlayer ();
+		}
+		
+		if (col.transform.CompareTag ("Ground")) {
+			playerRigid.simulated = false;
+			KillPlayer ();
+			transform.rotation = downRotation;
+			// Grayscale player
+			GrayScalePlayer();
 		}
 	}
 
