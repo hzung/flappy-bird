@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour {
 
 	public static GameManager Instance;
 
-	[SerializeField] private GameObject[] playerPrefabs;
+	[SerializeField] private RuntimeAnimatorController[] playerAnimatorControllers;
+	[SerializeField] private GameObject playerPrefab;
 	[SerializeField] private Transform playerPos;
 	[SerializeField] private Sprite[] backgroundImage;
 	[SerializeField] private SpriteRenderer background;
@@ -22,6 +23,8 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] private GameObject medalSparkle;
 
 	private GameObject flappy;
+	private Animator flappyAnimator;
+	private RuntimeAnimatorController playerAnimatorController;
 	private bool ready, start, end, newBool;
 	private int gameScore;
 
@@ -35,10 +38,14 @@ public class GameManager : MonoBehaviour {
 		// This is done only for testing purposes and should not be kept in the actual game
 		// PlayerPrefs.DeleteAll();
 
-
 		ready = true;
+		// Random a player animator
+		playerAnimatorController = playerAnimatorControllers[Random.Range(0, playerAnimatorControllers.Length)];
+		
 		// Create one amongst the 3 players
-		flappy = Instantiate (playerPrefabs[Random.Range (0, playerPrefabs.Length)], playerPos.position, transform.rotation);
+		flappy = Instantiate (playerPrefab, playerPos.position, transform.rotation);
+		flappyAnimator = flappy.GetComponent<Animator>();
+		flappyAnimator.runtimeAnimatorController = playerAnimatorController;
 		flappy.transform.parent = playerPos;
 		// Use one amongst the 2 Backgrounds
 		background.sprite = backgroundImage[Random.Range (0, backgroundImage.Length)];
